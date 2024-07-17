@@ -17,14 +17,14 @@ bool isLabel(string token) {
     return false;
 }
 
-bool inMap(string token, map <string,int> ts) {
-    if (ts.find(token) == ts.end()) {
+bool inMap(const std::string& token, const std::map<std::string, int>& ts) {
+    try {
+        ts.at(token);
+        return true;
+    } catch (const std::out_of_range&) {
         return false;
     }
-    return true;
 }
-
-
 
 int getValue(const std::string& str, const std::map<std::string, int>& mp) {
     if (inMap(str, mp)) {
@@ -43,4 +43,10 @@ int getValue(const std::string& str, const std::map<std::string, int>& mp) {
     }
 }
 
+bool isValidLabel(string token) {
+    if (token.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_") != string::npos) {
+        return false;
+    }
+    return true;
+}
 #endif

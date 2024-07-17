@@ -74,4 +74,21 @@ vector<vector<string>> tokenParser(string arquivo){
 
 }
 
+
+void createFilePre(vector<vector<string>> programa, std::string file_name, std::string extension) {
+    // abrir arquivo
+    std::ofstream outfile (file_name + extension);
+
+    // Iterate through the 2D vector 'programa'
+    for (int i = 0; i < programa.size(); i++) {
+        for (int j = 0; j < programa[i].size(); j++) {
+            // Write each element of the vector to the file followed by a space
+            outfile << programa[i][j];
+            outfile << " ";
+        }
+        outfile << "\n";
+    }
+    outfile.close();
+}
+
 #endif //TOKENIZER_H_INCLUDED
