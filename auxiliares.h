@@ -9,6 +9,18 @@
 using namespace std;
 
 
+vector<string> separateOperands(string ops) {
+    string tmp;
+    stringstream ss(ops);
+    vector<string> words;
+
+    while(getline(ss, tmp, ',')) {
+        words.push_back(tmp);
+    }
+
+    return words;
+}
+
 
 bool isLabel(string token) {
     if (token[token.length()-1] == ':') {

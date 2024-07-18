@@ -91,4 +91,24 @@ void createFilePre(vector<vector<string>> programa, std::string file_name, std::
     outfile.close();
 }
 
+void createFileObject(const std::vector<int>& objeto, const std::string& file_name, const std::string& extension) {
+    std::ofstream outfile(file_name + extension); // create empty file
+
+    if (outfile.is_open()) {
+        // Iterate through the vector and write integers to the file separated by spaces
+        for (size_t i = 0; i < objeto.size(); ++i) {
+            outfile << objeto[i];
+
+            // Add a space after each integer except the last one
+            if (i < objeto.size() - 1) {
+                outfile << " ";
+            }
+        }
+
+        outfile.close();
+    } else {
+        std::cerr << "Unable to open file: " << file_name + extension << std::endl;
+    }
+}
+
 #endif //TOKENIZER_H_INCLUDED

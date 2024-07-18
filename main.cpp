@@ -28,9 +28,16 @@ int main(int argc, char *argv[]){
         return 0;
     }
     if(op == "-o"){ // .OBJ
-        //preprocess(programa); comentado se devemos rodar em etapas // op -o deve receber arquivo .PRE
-        //objeto = singlePass(programa);
-        //createFileObj(objeto, file_name, ".OBJ");
+
+        vector<int> objeto;
+        map <string,int> tuso;
+        map <string,int> tdef;
+        vector<int> real;
+
+        preprocess(programa); // op -o deve receber arquivo .PRE
+        auto results = singlePass(programa);
+        std::tie(objeto, tuso, tdef, real) = results;
+        createFileObject(objeto, file_name, ".OBJ");
         return 0;
     }
 }

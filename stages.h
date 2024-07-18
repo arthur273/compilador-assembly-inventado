@@ -11,7 +11,7 @@
 map <string,int> opcodes = {
 {"ADD", 1},
 {"SUB", 2},
-{"MULT", 3},
+{"MUL", 3},
 {"DIV", 4},
 {"JMP", 5},
 {"JMPN", 6},
@@ -23,6 +23,8 @@ map <string,int> opcodes = {
 {"INPUT", 12},
 {"OUTPUT", 13},
 {"STOP", 14}};
+
+vector<string> diretivas = {"CONST", "SPACE"};
 
 
 void preprocess (vector<vector<string>> &programa) {
@@ -69,65 +71,121 @@ void preprocess (vector<vector<string>> &programa) {
     }
 }
 
-struct data {
+
+struct TSinstance {
     int value;
     bool flag;
-    string reference;
+    int reff;
 };
 
+//checkar program size para operandos utilizando hasFlag
 
-struct tsinstance {
-    std::string name;
-    int value;
-    bool flag;
-    int reference;
-};
 // funcao single pass precisa retornar: lista de inteiros(codigo), tabela de uso(map), tabela de definicoes(map) e realocacao(string ou vetor)
-std::tuple<vector<int>, map<std::string, int>, map<std::string, int>, vector<int>> singlepass(vector<vector<string>> &programa);{
+std::tuple<vector<int>, map<std::string, int>, map<std::string, int>, vector<int>> singlePass(vector<vector<string>> &programa){
 
-    vector<int> code;
+    vector<int> obj;
     map <string,int> tuso;
     map <string,int> tdef;
     vector<int> real;
 
+    map<string, TSinstance> TS;
     bool hasLabel;
     vector<string> ops_sep;
-    string ops_joined;
+    string operands_joined;
     string label;
+    string operation;
+    int contador_posicao = 0;
     int next_adress;
+    string operand;
 
-    for (int i=0; i < programa.size(); contador_linha++, i++){
-           for(int j=0; programa[i].size(); j++){}
-           if (isLabel(programa[i][0])) {
-                label = getLabel(programa[i][0]);
+    for (int contador_linha = 1, i = 0; i < programa.size(); contador_linha++, i++){
 
-                if (isalpha(label[0]) == false) {
-                    throw invalid_argument("LEXICAL ERROR: label defined with non-alphabetical character at line " + to_string(contador_linha) + ".");
-                }
-
-                if (isValidLabel(label) == false) {
-                    cout << label;
-                    cout << "\n";
-                    throw invalid_argument("LEXICAL ERROR: label defined with non-alphanumerical character at line " + to_string(contador_linha) + ".");
-                }
-                if (inTS(label, ts)){
-                   if (TS[label].flag){ // Ja esta definido
-                        throw invalid_argument("SEMANTICAL ERROR: redefinicao de label " + to_string(contador_linha) + ".");
-                   }else{ // Esta na TS mas ainda ha pendencias e ainda nao foi definido
-                       TS[label].flag = true;
-                       TS[label].value = contador_posicao;
-                       while (next_adress != -1 ){
-                            next_adress = TS[label].reference
-                       }
-                   }
-               }else {
-                    TS.insert(pair<string, int>(label, contador_posicao));
-                }
+       if (isLabel(programa[i][0])) {
+            label = programa[i][0].substr(0, programa[i][0].size()-1); // tira os dois pontos da label
+            operation = programa[i][1];
+            if (programa[i].size() > 2){
+                operands_joined = programa [i][2];
+                ops_sep = separateOperands(operands_joined);}
+            if (isalpha(label[0]) == false) {
+                throw invalid_argument("LEXICAL ERROR: label defined with non-alphabetical character at line " + to_string(contador_linha) + ".");
             }
 
-    }
+            if (isValidLabel(label) == false) {
+                throw invalid_argument("LEXICAL ERROR: label defined with non-alphanumerical character at line " + to_string(contador_linha) + ".");
+            }
+            if (TS.count(label)){
+               if (TS[label].flag){ // Ja esta definido
+                    throw invalid_argument("SEMANTICAL ERROR: redefinicao de label " + to_string(contador_linha) + ".");
+               }else{ // Esta na TS mas ainda ha pendencias e ainda nao foi definido
+                   TS[label].flag = true;
+                   TS[label].value = static_cast<int>(obj.size());
+                   next_adress = 0;
+                   while (TS[label].reff != -1){
+                        next_adress = TS[label].reff;
+                        TS[label].reff = obj[next_adress];
+                        obj[next_adress] = TS[label].value;
+                   }
+                }
+            }
+           else { // se nao esta na tabela de simbolos, inserir
+                TS[label].flag = true;
+                TS[label].value = static_cast<int>(obj.size());
+                }
+
+            if (count(diretivas.begin(), diretivas.end(), operation)) {
+                if (operation == "SPACE"){
+                    obj.push_back(0);
+                    if (programa[i].size() > 2) {throw invalid_argument("SYNTAX ERROR: wrong number of arguments at line " + to_string(contador_linha) + ".");}
+            }
+                if (operation == "CONST"){
+                    obj.push_back(stoi(ops_sep[0]));
+                    if (ops_sep.size() != 1 || programa[i].size() > 3){
+                            throw invalid_argument("SYNTAX ERROR: wrong number of arguments at line " + to_string(contador_linha) + ".");}
+                }
+            contador_posicao += 1;
+            continue;
+            }
+        }
+        else{
+            operation = programa[i][0];
+            operands_joined = programa[i][1]; // O que acontece se nao ha operdores ?
+            ops_sep = separateOperands(operands_joined);
+        }
+        if (opcodes.count(operation)) {
+            if ((operation == "COPY") && (ops_sep.size() != 2)) {
+                throw invalid_argument("SYNTAX ERROR: wrong number of arguments at line " + to_string(contador_linha) + ".");
+            }
+
+            if ((operation == "STOP") && (ops_sep.size() != 0)) {
+                throw invalid_argument("SYNTAX ERROR: wrong number of arguments at line " + to_string(contador_linha) + ".");
+            }
+
+            if ((operation != "COPY") && (operation != "STOP") && (ops_sep.size()) != 1) {
+                throw invalid_argument("SYNTAX ERROR: wrong number of arguments at line " + to_string(contador_linha) + ".");
+            }
+            obj.push_back(getValue(operation, opcodes));
+            for (int k=0; k < ops_sep.size(); k++){
+                operand = ops_sep[k];
+                if (TS.count(operand)){
+                        if (TS[operand].flag){
+                            obj.push_back(TS[operand].value);}
+                        else{
+                            obj.push_back(TS[operand].reff);
+                            TS[operand].reff = static_cast<int>(obj.size() - 1);} // obj.size() - 1 seria a posicao dele no objeto
+                }
+                else{
+                    obj.push_back(-1);
+                    TSinstance symbol_instance = {0, false, static_cast<int>(obj.size() - 1)};
+                    TS[operand] = symbol_instance;
+                }
+            }
+            contador_posicao += 1 + ops_sep.size();
+        }
+        else{
+            throw invalid_argument("ERRO SINTATICO: Operacao invalida na linha" + to_string(contador_linha) + ".");
+            }
+        }
+        return std::make_tuple(obj, tuso, tdef, real);
 }
-
-
 
 #endif
