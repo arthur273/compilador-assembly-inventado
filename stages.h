@@ -32,8 +32,10 @@ void preprocess (vector<vector<string>> &programa) {
     map <string,int> equs;
     int value;
     string label;
+    bool removida;
 
     for (int i=0; i < programa.size(); i++){
+
         if (programa[i].size() > 1) {
             if (programa[i][1] == "EQU") {
                 label = programa[i][0].substr(0, programa[i][0].size()-1); // tira os dois pontos da label
@@ -44,7 +46,28 @@ void preprocess (vector<vector<string>> &programa) {
             }
         }
 
-        if (programa[i][0] == "IF") {
+        if (isLabel(programa[i][0]) && programa[i][1] == "IF") {
+            removida = false;
+            value = getValue(programa[i][2], equs);
+            if (value == 0) {
+                removida = true;
+                remove_index.push_back(i + 1); // remove a próxima
+            }
+            programa[i].erase(programa[i].begin() + 1, programa[i].end()); // remover "IF" e argumentos, mantém a label
+
+        if (isLabel(programa[i][0]) && programa[i].size() == 1) {
+            int j = removida ? i + 2 : i + 1; // ajusta o índice de início dependendo se uma linha foi removida
+
+            while (j < programa.size() && (programa[j].empty() || !isLabel(programa[j][0])) && programa[i].size() == 1) { // itera ate encontrar uma linha nao vazia sem label
+                if (!programa[j].empty() && !isLabel(programa[j][0])) {
+                    programa[i].insert(programa[i].end(), programa[j].begin(), programa[j].end());
+                    remove_index.push_back(j); // marca a linha atual para remoção
+                }
+                j++;
+            }
+        }
+
+        }if (programa[i][0] == "IF") {
             value = getValue(programa[i][1], equs); // get Value retorna programa[i][1] se nao encontrado em getValue
             remove_index.push_back(i);
             if (value == 0) {
