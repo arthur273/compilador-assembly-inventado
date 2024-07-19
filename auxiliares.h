@@ -50,7 +50,7 @@ int getValue(const std::string& str, const std::map<std::string, int>& mp) {
             // Handle case where str cannot be converted to int
             std::cerr << "Error: " << e.what() << std::endl;
             // Return a default value or throw an exception as needed
-            throw std::runtime_error("Valor invalido para argumento de if - erro sintatico");
+            cout << ("VALOR INVALIDO PARA ARGUMENTO DE IF - ERRO SINTATICO");
         }
     }
 }

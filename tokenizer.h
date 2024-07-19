@@ -23,7 +23,6 @@ bool apenasLabel (vector<string> linha){
     }
 }
 
-
 vector<vector<string>> tokenParser(string arquivo){
     ifstream file(arquivo);
     string str;
@@ -74,6 +73,7 @@ vector<vector<string>> tokenParser(string arquivo){
 
 }
 
+namespace create {
 
 void createFilePre(vector<vector<string>> programa, std::string file_name, std::string extension) {
     // abrir arquivo
@@ -90,16 +90,36 @@ void createFilePre(vector<vector<string>> programa, std::string file_name, std::
     }
     outfile.close();
 }
-
-void createFileObject(const std::vector<int>& objeto, const std::string& file_name, const std::string& extension) {
+void createFileObject(const std::vector<int>& objeto,
+                      const std::multimap<std::string, int>& tuso,
+                      const std::map<std::string, int>& tdef,
+                      const std::vector<int>& real,
+                      int ligacao,
+                      const std::string& file_name,
+                      const std::string& extension){
     std::ofstream outfile(file_name + extension); // create empty file
-
     if (outfile.is_open()) {
         // Iterate through the vector and write integers to the file separated by spaces
+        if (ligacao == 1){
+            cout << "ERRO: begin ou end nao pareados";
+        }
+        if (ligacao == 2){
+            outfile << "USO\n";
+            for (auto it = tuso.begin(); it != tuso.end(); ++it) {
+                outfile << it->first << " " << it->second << " ";
+            }
+            outfile << "\nDEF\n";
+            for (auto it = tdef.begin(); it != tdef.end(); ++it) {
+                outfile << it->first << " " << it->second << " ";
+            }
+            outfile << "\nREAL\n";
+            for (const auto& num : real) {
+                outfile << num;
+            }
+            outfile << "\nOBJ\n";
+        }
         for (size_t i = 0; i < objeto.size(); ++i) {
             outfile << objeto[i];
-
-            // Add a space after each integer except the last one
             if (i < objeto.size() - 1) {
                 outfile << " ";
             }
@@ -111,4 +131,5 @@ void createFileObject(const std::vector<int>& objeto, const std::string& file_na
     }
 }
 
+}
 #endif //TOKENIZER_H_INCLUDED

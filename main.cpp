@@ -24,20 +24,21 @@ int main(int argc, char *argv[]){
     vector<vector<string>> programa = tokenParser(arquivo);
     if(op == "-p"){ // .PRE
         preprocess(programa);
-        createFilePre(programa, file_name, ".PRE");
+        create::createFilePre(programa, file_name, ".PRE");
         return 0;
     }
     if(op == "-o"){ // .OBJ
 
         vector<int> objeto;
-        map <string,int> tuso;
+        multimap <string,int> tuso;
         map <string,int> tdef;
         vector<int> real;
+        int ligacao;
 
-        preprocess(programa); // op -o deve receber arquivo .PRE
+        preprocess(programa); // op -o deve receber arquivo .PRE comentar essa linha no final
         auto results = singlePass(programa);
-        std::tie(objeto, tuso, tdef, real) = results;
-        createFileObject(objeto, file_name, ".OBJ");
+        std::tie(objeto, tuso, tdef, real, ligacao) = results;
+        create::createFileObject(objeto, tuso, tdef, real, ligacao, file_name,".OBJ");
         return 0;
     }
 }
