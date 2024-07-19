@@ -90,6 +90,25 @@ void createFilePre(vector<vector<string>> programa, std::string file_name, std::
     }
     outfile.close();
 }
+
+void createFileExe(const std::vector<int>& OBJ_final,
+                   const std::string& file_name,
+                   const std::string& extension){
+    std::ofstream outfile(file_name + extension); // create empty file
+
+     if (outfile.is_open()) {
+        for (int num : OBJ_final) {
+            outfile << num << " ";
+        }
+        outfile.close();
+    } else {
+        std::cerr << "Unable to open file: " << file_name + extension << std::endl;
+    }
+}
+
+
+
+
 void createFileObject(const std::vector<int>& objeto,
                       const std::multimap<std::string, int>& tuso,
                       const std::map<std::string, int>& tdef,
@@ -116,8 +135,8 @@ void createFileObject(const std::vector<int>& objeto,
             for (const auto& num : real) {
                 outfile << num;
             }
-            outfile << "\nOBJ\n";
         }
+        outfile << "\nOBJ\n";
         for (size_t i = 0; i < objeto.size(); ++i) {
             outfile << objeto[i];
             if (i < objeto.size() - 1) {

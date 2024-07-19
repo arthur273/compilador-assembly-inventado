@@ -142,6 +142,8 @@ tuple<vector<int>, multimap<string,int> , map<string, int>, vector<int>, int> si
             operation = programa[i][1];
             if ((contador_linha == 1) && (operation == "BEGIN")){
                 ligacao += 1;
+                TS[label].value = 0; // begin na primeira linha
+                TS[label].flag = true;
                 continue;
                 }
             if (programa[i].size() > 2){
@@ -231,7 +233,7 @@ tuple<vector<int>, multimap<string,int> , map<string, int>, vector<int>, int> si
                 operand = ops_sep[k];
                 if (TUSO.count(operand)){
                     obj.push_back(0);
-                    TUSO_map.insert(std::make_pair(operand, static_cast<int>(obj.size())));
+                    TUSO_map.insert(std::make_pair(operand, static_cast<int>(obj.size() - 1)));
                     real.push_back(1);
                     continue;
                 }

@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
     vector<vector<string>> programa = tokenParser(arquivo);
     if(op == "-p"){ // .PRE
         preprocess(programa);
-        create::createFilePre(programa, file_name, ".PRE");
+        create::createFilePre(programa, file_name, ".pre");
         return 0;
     }
     if(op == "-o"){ // .OBJ
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
         preprocess(programa); // op -o deve receber arquivo .PRE comentar essa linha no final
         auto results = singlePass(programa);
         std::tie(objeto, tuso, tdef, real, ligacao) = results;
-        create::createFileObject(objeto, tuso, tdef, real, ligacao, file_name,".OBJ");
+        create::createFileObject(objeto, tuso, tdef, real, ligacao, file_name,".obj");
         return 0;
     }
 }

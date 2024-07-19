@@ -73,41 +73,47 @@ int main(int argc, char* argv[]) {
     map<string, int> DEF;
     vector<int> REAL;
     vector<int> OBJETO;
+    map<string,int> DEF_geral;
+    vector<int> OBJ_final;
+    int current_file_displacement = 0 ;
+    string arquivo_final;
 
     if (argc < 2) {
     cout << "ERRO: NAO FOI PASSADO ARGUMENTO PARA O LIGADOR." << endl;
     return 0;
     }
 
-    vector<string> arquivos_obj;
+    // CRIACAO DE TABELA DE DEFINICOES GERAL
+    for (int i = 1; i < argc; ++i) {
+         string arquivo = argv[i];
+        if ( i ==1 ){
+            arquivo_final = arquivo;
+        }
+        auto results = parseFile(arquivo);
+        std::tie(USO, DEF, REAL, OBJETO) = results;
+        for (const auto& pair : DEF) {
+            const string& key = pair.first;
+            int originalValue = pair.second;
 
-    string arquivo = argv[1];
-
-    auto results = parseFile(arquivo);
-    std::tie(USO, DEF, REAL, OBJETO) = results;
-
-    std::cout << "USO:\n";
-    for (const auto& pair : USO) {
-        std::cout << "(" << pair.first << ", " << pair.second << ")\n";
+            // Calculate new value by adding variableToAdd
+            int newValue = originalValue + current_file_displacement;
+            cout  << key << " " << originalValue << " " << current_file_displacement;
+            // Store the updated value in resultMap
+            DEF_geral[key] = newValue;
+        }
+        current_file_displacement += OBJETO.size();
     }
 
-    std::cout << "\nDEF:\n";
-    for (const auto& pair : DEF) {
-        std::cout << "(" << pair.first << ", " << pair.second << ")\n";
+    // SUBSTITUICAO NOS OBJETOS UTILIZANDO TABELA DE USO
+    for (int i = 1; i < argc; ++i) {
+        string arquivo = argv[i];
+        auto results = parseFile(arquivo);
+        std::tie(USO, DEF, REAL, OBJETO) = results;
+        for (const auto& pair : USO) {
+            OBJETO[pair.second] = DEF_geral[pair.first];
+        }
+        OBJ_final.insert(OBJ_final.end(), OBJETO.begin(), OBJETO.end());
     }
-
-    std::cout << "\nREAL:\n";
-    for (int num : REAL) {
-        std::cout << num << " ";
-        }
-    std::cout << std::endl;;
-
-    std::cout << "\nOBJ:\n";
-    for (int num : OBJETO) {
-        std::cout << num << " ";
-        }
-    std::cout << std::endl;;
-
-
+    create::createFileExe(OBJ_final, arquivo_final,".e");
     return 0;
 }
