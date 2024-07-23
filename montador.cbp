@@ -47,6 +47,7 @@
 		<Unit filename="teste.asm">
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="teste2.asm" />
 		<Unit filename="tokenizer.h">
 			<Option target="Release" />
 		</Unit>

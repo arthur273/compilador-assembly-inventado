@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
          string arquivo = argv[i];
         if ( i ==1 ){
-            arquivo_final = arquivo;
+            arquivo_final = arquivo.substr(0, arquivo.find_last_of('.'));
         }
         auto results = parseFile(arquivo);
         std::tie(USO, DEF, REAL, OBJETO) = results;
@@ -97,7 +97,6 @@ int main(int argc, char* argv[]) {
 
             // Calculate new value by adding variableToAdd
             int newValue = originalValue + current_file_displacement;
-            cout  << key << " " << originalValue << " " << current_file_displacement;
             // Store the updated value in resultMap
             DEF_geral[key] = newValue;
         }

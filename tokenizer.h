@@ -89,6 +89,7 @@ void createFilePre(vector<vector<string>> programa, std::string file_name, std::
         outfile << "\n";
     }
     outfile.close();
+    cout << "Arquivo " << file_name << extension << " gerado. \n";
 }
 
 void createFileExe(const std::vector<int>& OBJ_final,
@@ -101,6 +102,7 @@ void createFileExe(const std::vector<int>& OBJ_final,
             outfile << num << " ";
         }
         outfile.close();
+        cout << "Arquivo " << file_name << extension << " gerado. \n";
     } else {
         std::cerr << "Unable to open file: " << file_name + extension << std::endl;
     }
@@ -135,19 +137,30 @@ void createFileObject(const std::vector<int>& objeto,
             for (const auto& num : real) {
                 outfile << num;
             }
+            outfile << "\nOBJ\n";
         }
-        outfile << "\nOBJ\n";
         for (size_t i = 0; i < objeto.size(); ++i) {
             outfile << objeto[i];
             if (i < objeto.size() - 1) {
                 outfile << " ";
             }
         }
-
         outfile.close();
+        cout << "Arquivo " << file_name << extension << " gerado. \n";
     } else {
         std::cerr << "Unable to open file: " << file_name + extension << std::endl;
     }
+//
+//    if (ligacao == 0){
+//        std::ofstream outfile(file_name + ".e"); // create empty file
+//        for (size_t i = 0; i < objeto.size(); ++i) {
+//            outfile << objeto[i];
+//            if (i < objeto.size() - 1) {
+//                outfile << " ";
+//            }
+//        }
+//         outfile.close();
+//    }
 }
 
 }

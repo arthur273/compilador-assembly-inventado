@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
         vector<int> real;
         int ligacao;
 
-        preprocess(programa); // op -o deve receber arquivo .PRE comentar essa linha no final
+        //preprocess(programa); // op -o deve receber arquivo .PRE comentar essa linha no final
         auto results = singlePass(programa);
         std::tie(objeto, tuso, tdef, real, ligacao) = results;
         create::createFileObject(objeto, tuso, tdef, real, ligacao, file_name,".obj");
