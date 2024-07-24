@@ -46,3 +46,6 @@ Essa etapa é realizada pelo programa do ligador, que tem apenas um tipo de exec
 ./ligador teste.obj teste2.obj
 ```
 Gera como saída um arquivo “.e”, contendo uma única linha de código objeto igual ao OBJ que nao precisa ser ligado. Esse arquivo de saída pode ser executado no simulador.
+
+### Observação 
+Notamos que o executavel do simulador é fechado automaticamente ao ler uma operação "STOP" no código objeto, portanto para seu devido funcionamento as operações "STOP" devem ser removidas do codigo .asm inicial e então feito todo o processo de montagem e ligação caso haja begin e end.
